@@ -1670,7 +1670,17 @@ Vcampbellii_HJ-2023.faa  FASTA   Protein     5,399  1,758,006       15    325.6 
 
 ### Analizar los resultados obtenidos
 
+<img width="1558" height="1323" alt="image" src="https://github.com/user-attachments/assets/bbaa5e23-8a85-4f35-a413-71e82364d392" />
 
+<img width="990" height="1283" alt="image" src="https://github.com/user-attachments/assets/ee4a48f5-e21d-45f5-b188-852cee8ba142" />
+
+<img width="2512" height="545" alt="image" src="https://github.com/user-attachments/assets/ed8713e5-b9d5-48d2-884f-94b3b04cd141" />
+
+<img width="3024" height="765" alt="image" src="https://github.com/user-attachments/assets/cb36d2db-3459-4a96-89a5-9338058539c4" />
+
+<img width="3023" height="1357" alt="image" src="https://github.com/user-attachments/assets/86c8d5ab-803b-4d75-9580-7714e32a4e3f" />
+
+<img width="3024" height="1354" alt="image" src="https://github.com/user-attachments/assets/a4b02ca5-e551-4bde-8931-f4d069211ede" />
 
 > **Comentario:**
 > - **Clúster:** grupo de proteínas ortólogas (y parálogas recientes) de uno o más genomas.
