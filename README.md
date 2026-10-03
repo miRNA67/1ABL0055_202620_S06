@@ -745,6 +745,8 @@ head -n 1 m01_eggnog.tsv | tr '\t' '\n' | cat -n
 ```bash
 grep -c ">" ~/genomics/annotation/bakta/m01_bakta/m01.faa
 
+5512
+
 tail -n +2 m01_eggnog.tsv | wc -l
 ```
 
@@ -818,14 +820,22 @@ Bakta ya incluye, en la columna de referencias cruzadas (`DbXrefs`) de su tabla,
 ```bash
 grep -c "KEGG:K" ~/genomics/annotation/bakta/m01_bakta/m01.tsv
 
+1431
+
 grep -v "^#" ~/genomics/annotation/bakta/m01_bakta/m01.tsv | awk -F'\t' '{n=split($9,a,", "); for(j=1;j<=n;j++) if(a[j] ~ /^KEGG:K[0-9]+$/){sub("KEGG:","",a[j]); print $6"\t"a[j]}}' > m01_ko_bakta.txt
 
 head -n 5 m01_ko_bakta.txt
 
-cut -f 2 m01_ko_bakta.txt | sort -u | wc -l
-```
+M01_00001       K01985
+M01_00002       K01980
+M01_00008       K01977
+M01_00009       K00230
+M01_00020       K01878
 
-<!-- Pegar aquí la salida real con el genoma m01 -->
+cut -f 2 m01_ko_bakta.txt | sort -u | wc -l
+
+1128
+```
 
 > **Comentario:**
 > - El primer comando cuenta cuántas filas de la tabla de Bakta tienen un KO asignado.
@@ -835,7 +845,17 @@ cut -f 2 m01_ko_bakta.txt | sort -u | wc -l
 
 ### Descargar `m01_ko.txt` con WinSCP, ir a KEGG Mapper Reconstruct (https://www.genome.jp/kegg/mapper/reconstruct.html), cargar el archivo y ejecutar
 
-<!-- Captura: resultado de KEGG Mapper Reconstruct (pestañas Pathway y Module) -->
+<img width="1587" height="1042" alt="image" src="https://github.com/user-attachments/assets/80578aaa-1571-4c82-8625-fa067d3da797" />
+
+<img width="1063" height="1438" alt="image" src="https://github.com/user-attachments/assets/4dcb0358-cb11-4c7c-8581-a1dbe9bd159e" />
+
+<img width="1028" height="1138" alt="image" src="https://github.com/user-attachments/assets/23043af3-7e61-4209-97d7-ccb8e7aee660" />
+
+<img width="1781" height="1189" alt="image" src="https://github.com/user-attachments/assets/f74d8d5f-5614-4306-aca0-8e18ed22a7fe" />
+
+<img width="1319" height="713" alt="image" src="https://github.com/user-attachments/assets/1d3a5620-4c48-48c1-b5ce-1d943b938dd6" />
+
+<img width="1174" height="1245" alt="image" src="https://github.com/user-attachments/assets/98cfd51e-490f-4717-9f27-aa467f2f784d" />
 
 > **Comentario:**
 > - La pestaña *Pathway* muestra las rutas con genes presentes; al abrir un mapa, las enzimas del genoma aparecen resaltadas.
