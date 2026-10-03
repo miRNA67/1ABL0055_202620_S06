@@ -523,16 +523,6 @@ Los servidores web trabajan con colas de espera, por lo que conviene **enviar lo
 
 <img width="3024" height="1437" alt="image" src="https://github.com/user-attachments/assets/682dc1a5-ac17-4e1a-8191-358f13b4a89c" />
 
-<img width="3024" height="534" alt="image" src="https://github.com/user-attachments/assets/819d4d1a-3fa3-4a05-abc8-c86252223d2b" />
-
-<img width="3024" height="1081" alt="image" src="https://github.com/user-attachments/assets/60df35d2-9f4b-4e64-abe4-22b21790f988" />
-
-<img width="3024" height="1253" alt="image" src="https://github.com/user-attachments/assets/8c371536-b5c3-4d72-808a-14b3d01f6e76" />
-
-<img width="3024" height="1297" alt="image" src="https://github.com/user-attachments/assets/9966c88d-5a15-41b1-97b6-49b4ca06b9f8" />
-
-<img width="3024" height="1488" alt="image" src="https://github.com/user-attachments/assets/17f93604-17a5-4a89-bf80-ec5aeac25e54" />
-
 > **Comentario:** Al cargar el GenBank de Bakta, antiSMASH usa los genes ya anotados y los identificadores (`M01_...`) coinciden con los del resto de la práctica. Deje el nivel de detección por defecto (*relaxed*) y las opciones adicionales marcadas por defecto.
 
 ## 4. Evaluación del proteoma con BUSCO
@@ -711,9 +701,9 @@ busco --plot m01_busco_summaries
 
 ## 6. Anotación funcional con eggNOG-mapper
 
-### Descargar el archivo de anotaciones del resultado de eggNOG-mapper y subirlo con WinSCP a `~/genomics/annotation/eggnog/` con el nombre `m01.emapper.annotations`
+### Descargar el archivo de anotaciones del resultado de eggNOG-mapper y subirlo con WinSCP a `~/genomics/annotation/eggnog/` con y renombrarlo como `m01.emapper.annotations`
 
-<!-- Captura: página de resultados de eggNOG-mapper -->
+<img width="1423" height="1010" alt="image" src="https://github.com/user-attachments/assets/d7ebcd80-35c6-4f71-ab11-48173fd74c7b" />
 
 ### Preparar la tabla
 
@@ -723,9 +713,30 @@ cd ~/genomics/annotation/eggnog
 grep -v "^##" m01.emapper.annotations > m01_eggnog.tsv
 
 head -n 1 m01_eggnog.tsv | tr '\t' '\n' | cat -n
-```
 
-<!-- Pegar aquí la salida real con el genoma m01 -->
+     1  #query
+     2  seed_ortholog
+     3  evalue
+     4  score
+     5  eggNOG_OGs
+     6  tax_ceiling
+     7  farthest_donor_lineage
+     8  COG_category
+     9  Preferred_name
+    10  GOs
+    11  EC
+    12  KEGG_ko
+    13  KEGG_Pathway
+    14  KEGG_Module
+    15  KEGG_Reaction
+    16  KEGG_rclass
+    17  BRITE
+    18  KEGG_TC
+    19  CAZy
+    20  BiGG_Reaction
+    21  PFAMs
+    22  annotation_confidence
+```
 
 > **Comentario:**
 > - `grep -v "^##"`: elimina las líneas de comentario del inicio y del final del archivo; queda una tabla con encabezado y una fila por proteína anotada.
@@ -748,6 +759,8 @@ grep -c ">" ~/genomics/annotation/bakta/m01_bakta/m01.faa
 5512
 
 tail -n +2 m01_eggnog.tsv | wc -l
+
+5278
 ```
 
 > **Comentario:**
@@ -761,9 +774,22 @@ tail -n +2 m01_eggnog.tsv | wc -l
 awk -F'\t' 'NR==1{for(i=1;i<=NF;i++) if($i=="COG_category") c=i; next} $c!="-" && $c!="" {n=split($c,a,""); for(j=1;j<=n;j++) print a[j]}' m01_eggnog.tsv | sort | uniq -c | sort -k1,1nr > m01_cog_counts.txt
 
 cat m01_cog_counts.txt
-```
 
-<!-- Pegar aquí la salida real con el genoma m01 -->
+   4047 C
+   4047 G
+   4047 O
+   2846 0
+   2237 1
+   1856 2
+   1815 3
+   1471 4
+   1382 5
+   1313 6
+   1165 8
+   1106 7
+    997 9
+    753 S
+```
 
 > **Comentario:**
 > - `m01_cog_counts.txt`: tabla de dos columnas, el número de proteínas y la letra de la categoría COG, ordenada de mayor a menor (`sort -k1,1nr`).
@@ -803,10 +829,16 @@ awk -F'\t' 'NR==1{for(i=1;i<=NF;i++) if($i=="KEGG_ko") c=i; next} $c!="-" && $c!
 
 head -n 5 m01_ko.txt
 
-cut -f 2 m01_ko.txt | sort -u | wc -l
-```
+M01_05647       K07172
+M01_03211       K00640
+M01_03211       K00661
+M01_03211       K03818
+M01_03211       K13018
 
-<!-- Pegar aquí la salida real con el genoma m01 -->
+cut -f 2 m01_ko.txt | sort -u | wc -l
+
+2852
+```
 
 > **Comentario:**
 > - El comando `awk` busca la columna `KEGG_ko`, descarta las proteínas sin KO, separa los KO de una misma proteína (vienen separados por comas) y quita el prefijo `ko:`.
@@ -914,14 +946,18 @@ seqkit grep -p M01_00005 ~/genomics/annotation/bakta/m01_bakta/m01.faa
 
 ### Ir a NCBI Datasets Genome (https://www.ncbi.nlm.nih.gov/datasets/genome/), buscar el género de su cepa y descargar de 3 a 4 genomas de referencia: marque *Genome sequences (FASTA)* y *Protein (FASTA)*
 
-<!-- Captura: selección y descarga de genomas en NCBI Datasets -->
+<img width="1953" height="1421" alt="image" src="https://github.com/user-attachments/assets/26a43b40-faf1-457e-8409-0065a14c5c21" />
+
+<img width="2116" height="953" alt="image" src="https://github.com/user-attachments/assets/71d849ae-f72e-406c-8646-bf5aab253e45" />
+
+<img width="2138" height="1392" alt="image" src="https://github.com/user-attachments/assets/489782e0-87bd-4808-b9a9-034065b82a15" />
 
 > **Comentario:**
 > - Incluya la **cepa tipo de la especie** que identificó por ANI en la Semana 05 y otras especies del mismo género; filtre por *Reference genomes* y nivel de ensamblaje *Complete*.
 > - De cada genoma descargado necesita dos archivos: el genoma (`.fna`), para PGPg_finder, y el proteoma (`protein.faa`), para OrthoVenn3 (sección 12).
-> - Renombre los archivos con un nombre corto y sin espacios que identifique a la cepa, por ejemplo `Vparahaemolyticus_RIMD2210633.fna` y `Vparahaemolyticus_RIMD2210633.faa`.
+> - Renombre los archivos con un nombre corto y sin espacios que identifique a la cepa, por ejemplo `Vcam_RIMD2210633.fna` y `Vparahaemolyticus_RIMD2210633.faa`.
 
-### Subir con WinSCP los archivos `.fna` a `~/genomics/annotation/pgp/m01_genomes/` y los `.faa` a `~/genomics/annotation/orthovenn/`
+### Subir con WinSCP los archivos `.fna` a `~/genomics/annotation/pgp/m01_genomes/`
 
 ```bash
 cd ~/genomics/annotation/pgp
@@ -931,6 +967,8 @@ mkdir -p m01_genomes
 cp ~/genomics/assembly/nanopore/m01_genome_final.fasta m01_genomes/m01.fasta
 
 ls m01_genomes
+
+m01.fasta  Vcampbellii_BoB-53.fna  Vcampbellii_HJ-2023.fna
 ```
 
 > **Comentario:**
@@ -941,13 +979,11 @@ ls m01_genomes
 ### Barrido global de rasgos PGP con PGPg_finder
 
 ```bash
-conda deactivate
-
 PGPg_finder -w genome_wf -i m01_genomes -o m01_pgpg -t 10 --piden 40 --qcov 70
 ```
 
 > **Comentario:**
-> - `PGPg_finder`: en el servidor está instalado como comando global, **no hace falta activar ningún entorno de conda** (por eso se cierra antes el entorno anterior con `conda deactivate`). Su base de datos está en `/data/db/PGPg_finder/` y el comando la ubica automáticamente.
+> - `PGPg_finder`: en el servidor está instalado como comando global, **no hace falta activar ningún entorno de conda**. Su base de datos está en `/data/db/PGPg_finder/` y el comando la ubica automáticamente.
 > - `-w genome_wf`: flujo de trabajo para genomas. Para cada genoma predice las proteínas con Prodigal y las compara con DIAMOND (blastp) contra la base de datos PLaBAse, conservando el mejor hit de cada proteína.
 > - `-i m01_genomes`: carpeta con los genomas.
 > - `-o m01_pgpg`: carpeta de salida.
@@ -955,16 +991,77 @@ PGPg_finder -w genome_wf -i m01_genomes -o m01_pgpg -t 10 --piden 40 --qcov 70
 > - `--piden 40 --qcov 70`: identidad mínima de 40 % y cobertura mínima de la proteína de 70 %. Los valores por defecto del programa (30 % y 30 %) son muy permisivos: con una cobertura de 30 % basta que coincida un dominio para asignar el rasgo. El e-value máximo se deja en su valor por defecto (1e-5, `--evalue`).
 
 ```bash
-ls m01_pgpg
+ls -lh m01_pgpg
+
+total 7,6M
+drwxrwxr-x 5 alumno01 alumno01 4,0K oct  3 09:54 figures
+-rw-rw-r-- 1 alumno01 alumno01 216K oct  3 09:54 gene_counts.txt
+-rw-rw-r-- 1 alumno01 alumno01  955 oct  3 09:54 log.txt
+-rw-rw-r-- 1 alumno01 alumno01 156K oct  3 09:53 m01_diamond.txt
+-rw-rw-r-- 1 alumno01 alumno01 2,4M oct  3 09:52 m01_proteins.fa
+drwxrwxr-x 5 alumno01 alumno01 4,0K oct  3 09:54 tables
+-rw-rw-r-- 1 alumno01 alumno01 149K oct  3 09:54 Vcampbellii_BoB-53_diamond.txt
+-rw-rw-r-- 1 alumno01 alumno01 2,1M oct  3 09:53 Vcampbellii_BoB-53_proteins.fa
+-rw-rw-r-- 1 alumno01 alumno01 160K oct  3 09:52 Vcampbellii_HJ-2023_diamond.txt
+-rw-rw-r-- 1 alumno01 alumno01 2,5M oct  3 09:51 Vcampbellii_HJ-2023_proteins.fa
 
 head -n 3 m01_pgpg/m01_diamond.txt
 
+m01_001_2       PGPT0008470_581 96.0    175     7       0       1       175     1       175     9.14e-123       348
+m01_001_3       PGPT0002735_1517        99.5    435     2       0       16      450     51      485     5.33e-317       864
+m01_001_5       PGPT0001865_345 100     723     0       0       1       723     1       723     0.0     1407
+
 head -n 5 m01_pgpg/gene_counts.txt
 
-cat m01_pgpg/tables/non-normalized/gene_counts_Lv2.txt
-```
+Sample  ID      Count
+Vcampbellii_HJ-2023     PGPT0000020_175 1
+Vcampbellii_HJ-2023     PGPT0000020_73  1
+Vcampbellii_HJ-2023     PGPT0000050_2668        1
+Vcampbellii_HJ-2023     PGPT0000065_2111        1
 
-<!-- Pegar aquí la salida real con el genoma m01 y los genomas de referencia -->
+cat m01_pgpg/tables/non-normalized/gene_counts_Lv3.txt
+
+Lv3     Vcampbellii_BoB-53      Vcampbellii_HJ-2023     m01
+NITROGEN_ACQUISITION    80      90      97
+COLONIZATION-PLANT_DERIVED_SUBSTRATE_USAGE      383     405     432
+CARBON_DIOXID_FIXATION  4       6       5
+PHOSPHATE_SOLUBILIZATION        137     144     143
+POTASSIUM_SOLUBILIZATION        12      12      13
+SULFUR_ASSIMILATION|MINERALIZATION      23      24      26
+IRON_ACQUISITION        115     109     113
+HEAVY_METAL_DETOXIFICATION      82      81      86
+CE-BACTERIAL_FITNESS    89      128     115
+FLUORIDE_DETOXIFICATION 2       2       2
+XENOBIOTICS_BIODEGRADATION      33      38      39
+PHYTOHORMONE-ABSCISIC_ACID_DEGRADATION  18      18      18
+PHYTOHORMONE-CYTOKININS|DERIVATE_PRODUCTION     11      11      11
+PLANT_SIGNAL-OTHER_TERPENOID|DERIVATE_PRODUCTION        11      11      11
+PHYTOHORMONE-GAMMA-AMINOBUTYRIC_ACID|GABA_PRODUCTION    3       3       3
+PLANT_SIGNAL-PHOSPHOLIPID_PRODUCTION    14      14      14
+PLANT_SIGNAL-BRANCHING_INHIBITION       14      16      13
+PLANT_SIGNAL-GERMINATION_STIMULATION    30      30      31
+PLANT_SIGNALLING_VOLATILES      24      24      25
+PLANT_VITAMIN_PRODUCTION        92      92      95
+PLANT_SIGNAL-UBIQUINONE|COENZYME_Q_PRODUCTION   10      10      10
+PLANT_SIGNAL-LINOLENIC_ACID_PRODUCTION  2       2       2
+NEUTRALIZING_BIOTIC_STRESS      42      46      51
+NEUTRALIZING_ABIOTIC_STRESS     291     298     302
+UNIVERSAL_STRESS_RESPONSE       59      63      64
+INDUCTION_OF_SYSTEMIC_RESISTANCE|ISR    1       1       1
+TRIGGERED_IMMUNITY      19      20      20
+ROOT_COLONIZATION       12      13      13
+COLONIZATION-MOTILITY|CHEMOTAXIS        167     179     179
+CE-QUORUM_SENSING_RESPONSE|BIOFILM_FORMATION    138     172     168
+COLONIZATION-SURFACE_ATTACHMENT 73      75      80
+COLONIZATION-PLANT_CELL_WALL|MEMBRANE_DEGRADATION       3       3       4
+COLONIZATION-ADAPTION_TO_PLANT_IMMUNE_SYSTEM    2       2       2
+OTHER_COLONIZATION_RELATED_PROTEINS     15      15      17
+CE-CELL_ENVELOPE_REMODELLING    78      79      77
+CE-SPORE_PRODUCTION     6       5       6
+CE-EXOPOLYSACCHARIDE_PRODUCTION|EPS     2       1       1
+CE-BACTERIAL_SECRETION  70      76      78
+PUTATIVE_FUNCTIONS-1    13      15      15
+```
 
 > **Comentario:**
 > - `<muestra>_proteins.fa`: proteínas predichas por Prodigal para cada genoma.
@@ -975,7 +1072,9 @@ cat m01_pgpg/tables/non-normalized/gene_counts_Lv2.txt
 > - `figures/`: mapas de calor en formato SVG por nivel y un resumen (`figures/summary/normalized_summary_heatmap.svg`), que comparan su cepa con los genomas de referencia. Descárguelos con WinSCP.
 > - Niveles de la ontología PGPT: `Lv1` separa efectos directos e indirectos; `Lv2` incluye, entre otros, biofertilización, fitohormonas, biorremediación, colonización, exclusión competitiva y control del estrés; los niveles `Lv3` a `Lv5` son cada vez más específicos (por ejemplo, adquisición de nitrógeno → fijación de nitrógeno atmosférico → biosíntesis de la nitrogenasa).
 
-<!-- Imagen: mapa de calor de PGPg_finder (Lv2 o resumen) -->
+<img width="2668" height="1160" alt="image" src="https://github.com/user-attachments/assets/b7053eb2-7f40-44b7-b27b-409de9a59b3b" />
+
+<img width="1728" height="1042" alt="image" src="https://github.com/user-attachments/assets/09cde020-9e53-4767-af98-310fd7f29e12" />
 
 > **Punto de control:** PGPg_finder asignará un PGPT a una gran parte de las proteínas del genoma, porque la ontología incluye funciones generales (transporte, metabolismo central, motilidad). Por eso el número total de hits **no** mide qué tan buena promotora es una cepa. Interprete los resultados comparando su cepa con los genomas de referencia en el mapa de calor y contrástelos con la búsqueda dirigida: ¿los genes clave que encontró en `m01_pgp_genes.txt` aparecen en las categorías correspondientes de PGPg_finder?
 
@@ -1003,9 +1102,13 @@ run_dbcan CAZyme_annotation --input_raw_data ~/genomics/annotation/bakta/m01_bak
 
 ```bash
 head -n 5 m01_dbcan/overview.tsv
-```
 
-<!-- Pegar aquí la salida real con el genoma m01 -->
+Gene ID EC#     dbCAN_hmm       dbCAN_sub       DIAMOND #ofTools        Recommend Results       Substrate
+M01_00066       -       -       -       GT58    1       -       -
+M01_00112       -       -       CBM50_e2200(40-86)      CBM50   2       CBM50_e2200     chitin
+M01_00130       -       AA1(57-457)     AA1_e63(42-457) -       2       AA1_e63 lignin
+M01_00151       -       -       CBM32_e340(20-124)      -       1       -       host glycan
+```
 
 > **Comentario:** La carpeta `m01_dbcan` contiene los resultados de cada método (`dbCAN_hmm_results.tsv`, `dbCANsub_hmm_results.tsv`, `diamond.out`) y `overview.tsv`, que los reúne con una fila por proteína:
 > - `Gene ID`: identificador de la proteína (locus tag de Bakta).
@@ -1024,12 +1127,34 @@ awk -F'\t' 'NR==1{for(i=1;i<=NF;i++) if($i=="#ofTools") t=i; print; next} $t>=2'
 
 tail -n +2 m01_cazymes_filtered.tsv | wc -l
 
+143
+
 awk -F'\t' 'NR==1{for(i=1;i<=NF;i++) if($i=="Recommend Results") r=i; next} {n=split($r,a,"|"); for(j=1;j<=n;j++){cl=a[j]; sub(/[0-9_].*/,"",cl); print cl}}' m01_cazymes_filtered.tsv | sort | uniq -c
 
-awk -F'\t' 'NR==1{for(i=1;i<=NF;i++) if($i=="Recommend Results") r=i; next} {n=split($r,a,"|"); for(j=1;j<=n;j++){fam=a[j]; sub(/_.*/,"",fam); print fam}}' m01_cazymes_filtered.tsv | sort | uniq -c | sort -k1,1nr | head -n 15
-```
+     10 AA
+     37 CBM
+      5 CE
+     76 GH
+     39 GT
 
-<!-- Pegar aquí la salida real con el genoma m01 -->
+awk -F'\t' 'NR==1{for(i=1;i<=NF;i++) if($i=="Recommend Results") r=i; next} {n=split($r,a,"|"); for(j=1;j<=n;j++){fam=a[j]; sub(/_.*/,"",fam); print fam}}' m01_cazymes_filtered.tsv | sort | uniq -c | sort -k1,1nr | head -n 15
+
+     16 GT4
+     13 GH13
+     11 CBM5
+     11 GH23
+     10 CBM50
+      6 GH18
+      6 GT2
+      5 GH3
+      5 GH92
+      4 CBM73
+      4 GH20
+      3 CBM48
+      3 CBM69
+      3 GH188
+      3 GH2
+```
 
 > **Comentario:**
 > - Primer comando: conserva solo las proteínas detectadas por 2 o 3 métodos (criterio recomendado por los autores de dbCAN para reducir falsos positivos).
@@ -1054,14 +1179,35 @@ awk -F'\t' 'NR==1{for(i=1;i<=NF;i++) if($i=="Recommend Results") r=i; next} {n=s
 ```bash
 run_dbcan easy_CGC --input_raw_data ~/genomics/assembly/nanopore/m01_genome_final.fasta --mode prok --output_dir m01_dbcan_cgc --threads 10
 
+1_dbcan_cgc --threads 10
+step 1/3  CAZyme annotation...
+step 2/3  GFF processing...
+Generating Prodigal GFF: 6it [00:00, 37.02it/s]
+step 3/3  CGC identification...
+CGC analysis completed.
+
 grep -v "^#" m01_dbcan_cgc/cgc_standard_out.tsv | cut -f 1 | sort -u | wc -l
+
+72
 
 head -n 15 m01_dbcan_cgc/cgc_standard_out.tsv
 
-conda deactivate
+CGC#    Gene Type       Contig ID       Protein ID      Gene Start      Gene Stop       Gene Strand     Gene Annotation
+CGC1    CAZyme  m01_001 m01_001_104     112940  114034  +       CAZyme|CBM50_e2200
+CGC1    TC      m01_001 m01_001_105     114018  115127  +       TC|3.A.11.1.3
+CGC2    CAZyme  m01_001 m01_001_115     127555  128949  +       CAZyme|AA1_e63+TC|1.B.76.1.4
+CGC2    TC      m01_001 m01_001_116     129073  129456  +       TC|1.A.43.1.11
+CGC2    null    m01_001 m01_001_117     129782  131722  +       null
+CGC2    null    m01_001 m01_001_118     131722  133137  +       null
+CGC2    TC      m01_001 m01_001_119     133124  133897  +       TC|3.A.25.2.1
+CGC3    CAZyme  m01_001 m01_001_321     377865  379592  +       CAZyme|CBM50_e1982|CBM50_e1982|CBM50_e1982
+CGC3    STP     m01_001 m01_001_322     379611  381518  +       STP|HATPase_c
+CGC3    null    m01_001 m01_001_323     381654  382586  +       null
+CGC3    TC      m01_001 m01_001_324     382781  383044  +       TC|9.B.468.1.1
+CGC4    CAZyme  m01_001 m01_001_514     598096  599379  -       CAZyme|CE4_e337|CBM12_e13
+CGC4    TC      m01_001 m01_001_515     599628  599933  +       TC|4.A.3.2.6
+CGC4    TC      m01_001 m01_001_516     600022  601356  +       TC|4.A.3.2.6
 ```
-
-<!-- Pegar aquí la salida real con el genoma m01 -->
 
 > **Comentario:**
 > - `easy_CGC`: además de anotar las CAZymes, busca transportadores (TC), factores de transcripción (TF) y proteínas de transducción de señales (STP), e identifica los **clústeres de genes de CAZymes (CGC)**: regiones del genoma donde una CAZyme está junto a transportadores o reguladores, lo que sugiere un sistema completo de utilización de un polisacárido.
@@ -1070,7 +1216,62 @@ conda deactivate
 > - `cgc_standard_out.tsv`: una fila por gen de cada clúster, con el identificador del CGC, el tipo de gen (CAZyme, TC, TF, STP), el contig, las coordenadas y la anotación. El segundo comando cuenta cuántos CGC distintos tiene el genoma.
 > - `total_cgc_info.tsv`: anotación de todos los genes firma (CAZymes, TC, TF y STP) del genoma.
 
-> **Para profundizar (opcional):** con `run_dbcan easy_substrate` (mismos argumentos que `easy_CGC`) se predice además el sustrato de cada CGC, comparándolo con los loci de utilización de polisacáridos (PUL) caracterizados experimentalmente (`substrate_prediction.tsv`).
+### Predicción de sustratos
+
+```bash
+run_dbcan easy_substrate --input_raw_data ~/genomics/assembly/nanopore/m01_genome_final.fasta --mode prok --output_dir m01_dbcan_substrate --threads 10
+
+step 1/4  CAZyme annotation...
+step 2/4  GFF processing...
+Generating Prodigal GFF: 6it [00:00, 36.48it/s]
+step 3/4  CGC identification...
+step 4/4  Substrate prediction...
+CGC substrate analysis completed
+
+head -n 20 m01_dbcan_substrate/substrate_prediction.tsv
+
+#cgcid  PULID   dbCAN-PUL substrate     bitscore        signature pairs dbCAN-sub substrate     dbCAN-sub substrate score
+m01_001|CGC4    PUL0381 chitin  2530.0  CAZyme-CAZyme;TC-TC;TC-TC;TC-TC;CAZyme-CAZyme
+m01_001|CGC6    PUL0168 galactose       743.0   CAZyme-CAZyme;TC-null
+m01_001|CGC28   PUL0311 cellulose       2083.0  TC-TC;CAZyme-CAZyme;TC-TC;CAZyme-CAZyme
+m01_001|CGC30   PUL0048 trehalose       1001.0  CAZyme-CAZyme;TC-TC
+m01_002|CGC62   PUL0605 glycogen        1380.0  CAZyme-CAZyme;CAZyme-CAZyme     alpha-glucan    3.0
+m01_001|CGC5    PUL0012 chitin  6830.0  null-null;CAZyme-CAZyme;CAZyme-CAZyme;null-null;CAZyme-CAZyme;TC-TC;TC-TC;TC-TC;TC-TC
+m01_001|CGC12   PUL0230 starch  623.0   null-null;CAZyme-CAZyme;CAZyme-CAZyme
+m01_002|CGC64   PUL0160 alpha-mannan    1229.0  CAZyme-CAZyme;CAZyme-CAZyme;CAZyme-CAZyme;CAZyme-CAZyme;CAZyme-CAZyme;CAZyme-CAZyme;CAZyme-CAZyme;CAZyme-CAZyme;CAZyme-CAZyme;CAZyme-CAZyme;CAZyme-CAZyme;CAZyme-CAZyme   hostglycan      5.0
+m01_002|CGC51   PUL0573 beta-glucan     563.0   CAZyme-CAZyme;TC-TC
+m01_001|CGC29                                   hostglycan      2.0
+m01_002|CGC56   PUL0361 starch  509.8   TC-TC;CAZyme-CAZyme;CAZyme-CAZyme       alpha-glucan    2.0
+m01_001|CGC21   PUL0208 chitin  157.9   CAZyme-CAZyme;CAZyme-CAZyme;CAZyme-CAZyme       chitin  2.0
+m01_001|CGC13   PUL0213 galactomannan   593.0   CAZyme-CAZyme;TC-TC
+m01_001|CGC16   PUL0227 xylan   540.0   TC-TC;CAZyme-CAZyme
+m01_002|CGC42   PUL0722 xylan   188.3   CAZyme-CAZyme;STP-TC
+m01_002|CGC59                                   alpha-glucan    6.0
+m01_001|CGC11   PUL0111 melibiose       1744.0  TF-TF;CAZyme-CAZyme;TC-TC
+m01_001|CGC25   PUL0267 glycogen        540.0   CAZyme-CAZyme;null-null
+m01_001|CGC27   PUL0579 glycosaminoglycan       2212.0  TC-TC;CAZyme-CAZyme;TF-TF
+
+awk -F'\t' '$2 != "" && $2 != "null" {print $1, $2}' m01_dbcan_substrate/substrate_prediction.tsv
+
+#cgcid PULID
+m01_001|CGC4 PUL0381
+m01_001|CGC6 PUL0168
+m01_001|CGC28 PUL0311
+m01_001|CGC30 PUL0048
+m01_002|CGC62 PUL0605
+m01_001|CGC5 PUL0012
+m01_001|CGC12 PUL0230
+m01_002|CGC64 PUL0160
+m01_002|CGC51 PUL0573
+m01_002|CGC56 PUL0361
+m01_001|CGC21 PUL0208
+m01_001|CGC13 PUL0213
+m01_001|CGC16 PUL0227
+m01_002|CGC42 PUL0722
+m01_001|CGC11 PUL0111
+m01_001|CGC25 PUL0267
+m01_001|CGC27 PUL0579
+```
 
 > **Alternativa en línea:** el servidor dbCAN3 (https://pro.unl.edu/dbCAN2/) acepta el mismo archivo `m01.faa` y devuelve la misma tabla *overview*.
 
@@ -1078,7 +1279,15 @@ conda deactivate
 
 ### Abrir el enlace de resultados que antiSMASH envió a su correo
 
-<!-- Captura: página de resultados de antiSMASH (tabla de regiones) -->
+<img width="3024" height="534" alt="image" src="https://github.com/user-attachments/assets/819d4d1a-3fa3-4a05-abc8-c86252223d2b" />
+
+<img width="3024" height="1081" alt="image" src="https://github.com/user-attachments/assets/60df35d2-9f4b-4e64-abe4-22b21790f988" />
+
+<img width="3024" height="1253" alt="image" src="https://github.com/user-attachments/assets/8c371536-b5c3-4d72-808a-14b3d01f6e76" />
+
+<img width="3024" height="1297" alt="image" src="https://github.com/user-attachments/assets/9966c88d-5a15-41b1-97b6-49b4ca06b9f8" />
+
+<img width="3024" height="1488" alt="image" src="https://github.com/user-attachments/assets/17f93604-17a5-4a89-bf80-ec5aeac25e54" />
 
 > **Comentario:**
 > - Cada **región** es un clúster de genes biosintéticos (BGC) candidato. La tabla indica el contig, las coordenadas, el tipo de metabolito y el clúster conocido más parecido de la base de datos MIBiG, con su porcentaje de similitud.
@@ -1113,13 +1322,61 @@ run_resfinder.py -ifa ~/genomics/assembly/nanopore/m01_genome_final.fasta -o m01
 > - **Mutaciones cromosómicas (`--point`):** PointFinder solo está disponible para algunas especies de importancia clínica (por ejemplo, *Escherichia coli*, *Klebsiella*, *Salmonella*, *Staphylococcus aureus*, *Enterococcus faecalis*, *Enterococcus faecium*). Si su cepa pertenece a una de ellas, indique la especie y añada `--point -db_point "$CGE_RESFINDER_POINT_PATH"`, por ejemplo: `-s "Escherichia coli" --acquired --point`.
 
 ```bash
-ls m01_resfinder
+ls -lh m01_resfinder
+
+drwxrwxr-x 3 alumno01 alumno01 4,0K oct  3 10:14 disinfinder_blast
+-rw-rw-r-- 1 alumno01 alumno01    0 oct  3 10:14 DisinFinder_Hit_in_genome_seq.fsa
+-rw-rw-r-- 1 alumno01 alumno01    0 oct  3 10:14 DisinFinder_Resistance_gene_seq.fsa
+-rw-rw-r-- 1 alumno01 alumno01   28 oct  3 10:14 DisinFinder_results_table.txt
+-rw-rw-r-- 1 alumno01 alumno01  135 oct  3 10:14 DisinFinder_results_tab.txt
+-rw-rw-r-- 1 alumno01 alumno01    0 oct  3 10:14 DisinFinder_results.txt
+-rw-rw-r-- 1 alumno01 alumno01  31K oct  3 10:14 m01_genome_final.json
+-rw-rw-r-- 1 alumno01 alumno01 5,1K oct  3 10:14 pheno_table.txt
+drwxrwxr-x 2 alumno01 alumno01 4,0K oct  3 10:14 pointfinder_blast
+drwxrwxr-x 3 alumno01 alumno01 4,0K oct  3 10:14 resfinder_blast
+-rw-rw-r-- 1 alumno01 alumno01 1,3K oct  3 10:14 ResFinder_Hit_in_genome_seq.fsa
+-rw-rw-r-- 1 alumno01 alumno01 1,2K oct  3 10:14 ResFinder_Resistance_gene_seq.fsa
+-rw-rw-r-- 1 alumno01 alumno01  706 oct  3 10:14 ResFinder_results_table.txt
+-rw-rw-r-- 1 alumno01 alumno01  233 oct  3 10:14 ResFinder_results_tab.txt
+-rw-rw-r-- 1 alumno01 alumno01 4,9K oct  3 10:14 ResFinder_results.txt
 
 cat m01_resfinder/ResFinder_results_tab.txt
 
+Resistance gene Identity        Alignment Length/Gene Length    Coverage        Position in reference   Contig  Position in contig      Phenotype       Accession no.
+tet(35) 99.01   1110/1110       100.0   1..1110 m01_001 2348230..2349339        Doxycycline, Tetracycline       AF353562
+
 head -n 30 m01_resfinder/pheno_table.txt
 
-conda deactivate
+# ResFinder phenotype results.
+# Sample: m01_genome_final.fasta
+# 
+# The phenotype 'No resistance' should be interpreted with
+# caution, as it only means that nothing in the used
+# database indicate resistance, but resistance could exist
+# from 'unknown' or not yet implemented sources.
+# 
+# The 'Match' column stores one of the integers 0, 1, 2, 3.
+#      0: No match found
+#      1: Match < 100% ID AND match length < ref length
+#      2: Match = 100% ID AND match length < ref length
+#      3: Match = 100% ID AND match length = ref length
+# If several hits causing the same resistance are found,
+# the highest number will be stored in the 'Match' column.
+
+# Antimicrobial Class   WGS-predicted phenotype Match   Genetic background
+gentamicin      aminoglycoside  No resistance   0
+tobramycin      aminoglycoside  No resistance   0
+streptomycin    aminoglycoside  No resistance   0
+amikacin        aminoglycoside  No resistance   0
+isepamicin      aminoglycoside  No resistance   0
+dibekacin       aminoglycoside  No resistance   0
+kanamycin       aminoglycoside  No resistance   0
+neomycin        aminoglycoside  No resistance   0
+lividomycin     aminoglycoside  No resistance   0
+paromomycin     aminoglycoside  No resistance   0
+ribostamycin    aminoglycoside  No resistance   0
+unknown aminoglycoside  aminoglycoside  No resistance   0
+butiromycin     aminoglycoside  No resistance   0
 ```
 
 <!-- Pegar aquí la salida real con el genoma m01 -->
@@ -1136,9 +1393,38 @@ conda deactivate
 
 ```bash
 grep -i -E "lactamase|resistance|efflux" ~/genomics/annotation/bakta/m01_bakta/m01.tsv | cut -f 1,6,7,8 | head -n 30
-```
 
-<!-- Pegar aquí la salida real con el genoma m01 -->
+m01_001 M01_00131       crcB    fluoride efflux transporter CrcB
+m01_001 M01_00140       araJ    Bcr/CflA family efflux transporter
+m01_001 M01_00149               Threonine efflux protein
+m01_001 M01_00189       rhtB    homoserine/homoserine lactone efflux protein
+m01_001 M01_00217       dinF    MATE family efflux transporter DinF
+m01_001 M01_00324       fieF    CDF family cation-efflux transporter FieF
+m01_001 M01_00326       norM    Multidrug resistance protein NorM
+m01_001 M01_00408       kefG    glutathione-regulated potassium-efflux system ancillary protein KefG
+m01_001 M01_00409       kefB    glutathione-regulated potassium-efflux system protein KefB
+m01_001 M01_00710       corB    Magnesium/cobalt efflux protein
+m01_001 M01_00771               RND efflux pump membrane fusion protein barrel-sandwich domain-containing protein
+m01_001 M01_00772               Putative multidrug resistance protein
+m01_001 M01_00797       vmrA    sodium-coupled multidrug efflux MATE transporter VmrA
+m01_001 M01_00877       tehA    Tellurite resistance protein
+m01_001 M01_00920       terB    Tellurite resistance TerB family protein
+m01_001 M01_01278               RND efflux pump membrane fusion protein barrel-sandwich domain-containing protein
+m01_001 M01_01384       gloB    Metallo-beta-lactamase domain-containing protein
+m01_001 M01_01522       mdlB    Multidrug resistance-like ATP-binding protein MdlB
+m01_001 M01_01569               Multidrug efflux SMR transporter
+m01_001 M01_01573       fos     fosfomycin resistance glutathione transferase
+m01_001 M01_01591       norM    Multidrug resistance protein NorM
+m01_001 M01_01859       norM    Multidrug resistance protein NorM
+m01_001 M01_01911       hdeD    HdeD family acid-resistance protein
+m01_001 M01_01925               Efflux RND transporter periplasmic adaptor subunit
+m01_001 M01_02108       norM    Multidrug resistance protein NorM
+m01_001 M01_02114       araJ    Bcr/CflA family multidrug efflux MFS transporter
+m01_001 M01_02145       mdtL    Multidrug resistance protein MdtL
+m01_001 M01_02162               efflux RND transporter permease subunit
+m01_001 M01_02165               RND efflux pump membrane fusion protein barrel-sandwich domain-containing protein
+m01_001 M01_02187               Chlorhexidine efflux transporter domain-containing protein
+```
 
 > **Comentario:** Bakta usa internamente la base de datos de AMRFinderPlus para anotar genes de resistencia. Este comando busca en la tabla de anotación los productos relacionados con resistencia (betalactamasas, proteínas de resistencia, bombas de eflujo) y muestra el contig, el locus tag, el gen y el producto. Encontrará más resultados que con ResFinder, porque aquí se incluyen genes intrínsecos y bombas de eflujo generales.
 
@@ -1151,16 +1437,35 @@ conda activate abricate
 
 abricate --list
 
+DATABASE        SEQUENCES       DBTYPE  DATE
+vfdb    4392    nucl    2026-Oct-3
+plasmidfinder   488     nucl    2026-Oct-3
+ecoli_vf        2701    nucl    2026-Oct-3
+resfinder       3206    nucl    2026-Oct-3
+ncbi    5386    nucl    2024-Dec-15
+ecoh    597     nucl    2026-Oct-3
+argannot        2223    nucl    2024-Dec-15
+megares 6635    nucl    2024-Dec-15
+card    6059    nucl    2026-Oct-3
+
 abricate --db vfdb --minid 80 --mincov 80 --threads 10 ~/genomics/assembly/nanopore/m01_genome_final.fasta > m01_vfdb.tab
 
 cut -f 2,3,4,6,10,11,14 m01_vfdb.tab | column -t -s $'\t' | head -n 30
 
+SEQUENCE  START    END      GENE  %COVERAGE  %IDENTITY  PRODUCT
+m01_001   1066783  1067151  cheY  100.00     86.18      (cheY) chemotaxis protein CheY [Flagella (VF0519) - Motility (VFC0204)] [Vibrio cholerae O1 biovar El Tor str. N16961]
+m01_001   1073402  1073896  cheW  100.00     80.00      (cheW) purine-binding chemotaxis protein CheW [Flagella (VF0519) - Motility (VFC0204)] [Vibrio cholerae O1 biovar El Tor str. N16961]
+m01_001   2439976  2440467  vcrH  100.00     86.79      (vcrH) type III secretion system chaperone VcrH [T3SS1 (VF0408) - Effector delivery system (VFC0086)] [Vibrio parahaemolyticus RIMD 2210633]
+m01_001   2447606  2448890  vscN  97.13      81.71      (vscN) type III secretion system ATPase VscN [T3SS1 (VF0408) - Effector delivery system (VFC0086)] [Vibrio parahaemolyticus RIMD 2210633]
+m01_001   2465844  2466092  vscF  100.00     85.94      (vscF) type III secretion system needle protein VscF [T3SS1 (VF0408) - Effector delivery system (VFC0086)] [Vibrio parahaemolyticus RIMD 2210633]
+m01_003   13218    14534    pirB  100.00     100.00     (pirB) Photorhabdus insect-related toxin subunit PirB [PirAB (VF1362) - Exotoxin (VFC0235)] [Vibrio parahaemolyticus str. 3HP]
+m01_003   14547    14882    pirA  100.00     100.00     (pirA) Photorhabdus insect-related toxin subunit PirA [PirAB (VF1362) - Exotoxin (VFC0235)] [Vibrio parahaemolyticus str. 3HP]
+
 abricate --summary m01_vfdb.tab
 
-conda deactivate
+#FILE   NUM_FOUND       cheW    cheY    pirA    pirB    vcrH    vscF    vscN
+/home/alumno01/genomics/assembly/nanopore/m01_genome_final.fasta        7       100.00  100.00  100.00  100.00  100.00  100.00  97.13
 ```
-
-<!-- Pegar aquí la salida real con el genoma m01 -->
 
 > **Comentario:**
 > - `abricate --list`: muestra las bases de datos disponibles (`vfdb`, `card`, `resfinder`, `ncbi`, `plasmidfinder`, etc.), con su número de secuencias y su fecha.
@@ -1189,14 +1494,30 @@ mob_recon --infile ~/genomics/assembly/nanopore/m01_genome_final.fasta --outdir 
 
 ls -lh m01_plasmid
 
+-rw-rw-r-- 1 alumno01 alumno01  843 oct  3 10:24 biomarkers.blast.txt
+-rw-rw-r-- 1 alumno01 alumno01 5,6M oct  3 10:24 chromosome.fasta
+-rw-rw-r-- 1 alumno01 alumno01 1,5K oct  3 10:24 contig_report.txt
+-rw-rw-r-- 1 alumno01 alumno01 9,5K oct  3 10:24 mge.report.txt
+-rw-rw-r-- 1 alumno01 alumno01 1,1K oct  3 10:24 mobtyper_results.txt
+-rw-rw-r-- 1 alumno01 alumno01  68K oct  3 10:24 plasmid_AD413.fasta
+-rw-rw-r-- 1 alumno01 alumno01 138K oct  3 10:24 plasmid_AE795.fasta
+
 cut -f 2,3,5,6,7,8 m01_plasmid/contig_report.txt | column -t -s $'\t'
+
+molecule_type  primary_cluster_id  contig_id  size     gc                   md5
+chromosome     -                   m01_001    3620046  0.45565498338971383  ab3305ab19034af2b5bb4378f5ddd0e6
+chromosome     -                   m01_002    2216041  0.4542068490610056   683fad9c4d08882995585b0d374d10b3
+plasmid        AE795               m01_003    73423    0.45751331326695993  7002bae1c33d13b9a12c844b53b14934
+plasmid        AD413               m01_004    69340    0.44936544563022784  352832786a442f1f1dc995e791e5f382
+plasmid        AE795               m01_005    66980    0.42441027172290235  5b7feb13b6c297143c554f216f4ab9bc
+chromosome     -                   m01_006    22422    0.45053964855945056  7576057183e73eb2466466eb48dad006
 
 cut -f 1,2,3,6,8,10,14,17 m01_plasmid/mobtyper_results.txt | column -t -s $'\t'
 
-conda deactivate
+sample_id               num_contigs  size    rep_type(s)                       relaxase_type(s)  mpf_type  predicted_mobility  mash_neighbor_identification
+m01_genome_final:AE795  2            140403  rep_cluster_1486,rep_cluster_557  MOBC              -         mobilizable         Vibrio parahaemolyticus
+m01_genome_final:AD413  1            69340   rep_cluster_1486                  MOBP              -         mobilizable         Vibrio campbellii
 ```
-
-<!-- Pegar aquí la salida real con el genoma m01 -->
 
 > **Comentario:**
 > - `mob_recon`: clasifica cada contig del ensamblaje como cromosoma o plásmido y agrupa los contigs que pertenecen al mismo plásmido.
@@ -1224,12 +1545,81 @@ mefinder find --gff --contig ~/genomics/assembly/nanopore/m01_genome_final.fasta
 
 grep -v "^#" m01_mobile.csv | cut -d ',' -f 2,5,9,10,13,14,15 | column -t -s ','
 
+name             type                  identity  coverage  contig   start    end
+ISVvu6           insertion sequence    0.743     0.97      m01_001  1504511  1505602
+ISVvu6           insertion sequence    0.743     0.97      m01_001  1510904  1511995
+ISVa6            insertion sequence    0.972     1.0       m01_001  1499380  1500470
+ISVa6            insertion sequence    0.972     1.0       m01_001  1541800  1542890
+ISVa15           insertion sequence    0.901     0.995     m01_001  2369754  2370850
+ISVa15           insertion sequence    0.902     0.995     m01_001  77463    78559
+ISVa15           insertion sequence    0.902     0.995     m01_001  1547967  1549063
+ISVa15           insertion sequence    0.903     0.995     m01_001  2773215  2774311
+ISVa15           insertion sequence    0.903     0.995     m01_001  2167789  2168885
+ISVa15           insertion sequence    0.903     0.995     m01_001  2148498  2149594
+ISVa15           insertion sequence    0.903     0.998     m01_001  1550165  1551261
+ISVa15           insertion sequence    0.903     0.995     m01_001  1749816  1750912
+ISVa15           insertion sequence    0.903     0.998     m01_001  1827697  1828793
+ISVa15           insertion sequence    0.903     0.998     m01_001  2213162  2214258
+ISVa15           insertion sequence    0.903     0.995     m01_001  2268137  2269233
+ISVa15           insertion sequence    0.903     0.995     m01_001  2572762  2573858
+ISVa15           insertion sequence    0.903     0.995     m01_001  3561941  3563037
+ISVa15           insertion sequence    0.903     0.998     m01_001  1672848  1673944
+ISVa15           insertion sequence    0.903     0.998     m01_001  1701733  1702829
+ISVa15           insertion sequence    0.903     0.998     m01_001  1316765  1317861
+ISVa6            insertion sequence    0.972     1.0       m01_002  481899   482989
+ISVa15           insertion sequence    0.901     0.995     m01_002  1982959  1984055
+ISVa15           insertion sequence    0.902     0.995     m01_002  502142   503238
+ISVa15           insertion sequence    0.902     0.995     m01_002  1354772  1355868
+ISVa15           insertion sequence    0.903     0.995     m01_002  1963510  1964606
+ISVa15           insertion sequence    0.903     0.995     m01_002  850868   851964
+ISVa15           insertion sequence    0.903     0.995     m01_002  1152338  1153434
+ISVa15           insertion sequence    0.903     0.998     m01_002  1603366  1604462
+Tn6264           composite transposon  1.0       1.0       m01_003  11554    16980
+ISVa15           insertion sequence    0.903     0.995     m01_004  29187    30283
+ISVa6            insertion sequence    0.972     1.0       m01_005  34385    35475
+ISVa15           insertion sequence    0.902     0.995     m01_005  54246    55342
+ISVa15           insertion sequence    0.902     0.995     m01_005  56964    58060
+ISVa15           insertion sequence    0.903     0.995     m01_005  41718    42814
+ISVa15           insertion sequence    0.903     0.995     m01_005  58888    59984
+ISVa15           insertion sequence    0.903     0.998     m01_005  46507    47603
+cn_6223_ISVvu6   composite transposon  0.743     0.97      m01_001  1499379  1505602
+cn_7485_ISVvu6   composite transposon  0.743     0.97      m01_001  1504510  1511995
+cn_31987_ISVvu6  composite transposon  0.743     0.97      m01_001  1510903  1542890
+cn_6223_ISVa6    composite transposon  0.972     1.0       m01_001  1499379  1505602
+cn_31987_ISVa6   composite transposon  0.972     1.0       m01_001  1510903  1542890
+cn_3295_ISVa15   composite transposon  0.902     0.995     m01_001  1547966  1551261
+cn_29982_ISVa15  composite transposon  0.903     0.998     m01_001  1672847  1702829
+cn_49180_ISVa15  composite transposon  0.903     0.998     m01_001  1701732  1750912
+cn_20388_ISVa15  composite transposon  0.903     0.995     m01_001  2148497  2168885
+cn_46470_ISVa15  composite transposon  0.903     0.995     m01_001  2167788  2214258
+cn_20546_ISVa15  composite transposon  0.903     0.995     m01_002  1963509  1984055
+cn_5886_ISVa15   composite transposon  0.903     0.995     m01_005  41717    47603
+cn_8836_ISVa15   composite transposon  0.903     0.998     m01_005  46506    55342
+cn_3815_ISVa15   composite transposon  0.902     0.995     m01_005  54245    58060
+cn_3021_ISVa15   composite transposon  0.902     0.995     m01_005  56963    59984
+
 grep -v "^#" m01_mobile.csv | tail -n +2 | cut -d ',' -f 2,5 | sort | uniq -c | sort -k1,1nr
 
-conda deactivate
+     29 ISVa15,insertion sequence
+      4 ISVa6,insertion sequence
+      2 ISVvu6,insertion sequence
+      1 cn_20388_ISVa15,composite transposon
+      1 cn_20546_ISVa15,composite transposon
+      1 cn_29982_ISVa15,composite transposon
+      1 cn_3021_ISVa15,composite transposon
+      1 cn_31987_ISVa6,composite transposon
+      1 cn_31987_ISVvu6,composite transposon
+      1 cn_3295_ISVa15,composite transposon
+      1 cn_3815_ISVa15,composite transposon
+      1 cn_46470_ISVa15,composite transposon
+      1 cn_49180_ISVa15,composite transposon
+      1 cn_5886_ISVa15,composite transposon
+      1 cn_6223_ISVa6,composite transposon
+      1 cn_6223_ISVvu6,composite transposon
+      1 cn_7485_ISVvu6,composite transposon
+      1 cn_8836_ISVa15,composite transposon
+      1 Tn6264,composite transposon
 ```
-
-<!-- Pegar aquí la salida real con el genoma m01 -->
 
 > **Comentario:**
 > - `--contig`: genoma ensamblado en formato FASTA.
@@ -1256,9 +1646,12 @@ cp ~/genomics/annotation/bakta/m01_bakta/m01.faa .
 conda activate quality
 
 seqkit stats *.faa
-```
 
-<!-- Pegar aquí la salida real con el proteoma m01 y los de referencia -->
+file                     format  type     num_seqs    sum_len  min_len  avg_len  max_len
+m01.faa                  FASTA   Protein     5,512  1,733,312       29    314.5    3,828
+Vcampbellii_BoB-53.faa   FASTA   Protein     4,836  1,541,149       21    318.7    6,211
+Vcampbellii_HJ-2023.faa  FASTA   Protein     5,399  1,758,006       15    325.6    6,211
+```
 
 > **Comentario:**
 > - `cp ... .`: copia el proteoma anotado por Bakta a la carpeta actual, que debe contener además los proteomas de referencia que subió en la sección 7.
@@ -1266,7 +1659,9 @@ seqkit stats *.faa
 
 ### Descargar los archivos `.faa` con WinSCP, ir a OrthoVenn3 (https://orthovenn3.bioinfotoolkits.net/), cargar un archivo por cada genoma (*Upload*), asignarle un nombre corto a cada uno y enviar el análisis con el algoritmo OrthoFinder y los parámetros por defecto
 
-<!-- Captura: formulario de OrthoVenn3 con los proteomas cargados -->
+<img width="3010" height="1489" alt="image" src="https://github.com/user-attachments/assets/213bccf2-6792-40ae-b923-d5d1ff4cd653" />
+
+<img width="3007" height="1008" alt="image" src="https://github.com/user-attachments/assets/cdd2340e-53e3-4e5d-9e77-b17861badb62" />
 
 > **Comentario:**
 > - Se carga **un archivo de proteínas por genoma**. Con 4 o 5 genomas el diagrama de Venn todavía es legible; con más, use el gráfico UpSet.
@@ -1275,7 +1670,7 @@ seqkit stats *.faa
 
 ### Analizar los resultados obtenidos
 
-<!-- Captura: diagrama de Venn / UpSet de OrthoVenn3 -->
+
 
 > **Comentario:**
 > - **Clúster:** grupo de proteínas ortólogas (y parálogas recientes) de uno o más genomas.
