@@ -267,6 +267,8 @@ conda activate bakta
 
 ```bash
 echo $BAKTA_DB
+
+/data/db/bakta/db
 ```
 
 > **Comentario:** `echo` muestra en pantalla el valor de una variable. Debe aparecer la ruta de la base de datos de Bakta (`/data/db/bakta/db`); si no apareciera nada, el entorno no estaría activado.
@@ -1217,9 +1219,32 @@ done > m01_pgp_genes.txt
 
 ```bash
 cat m01_pgp_genes.txt
-```
 
-<!-- Pegar aquí la salida real con el genoma m01 -->
+nifH    0
+nifD    0
+nifK    0
+gcd     0
+pqqB    0
+pqqC    0
+pqqD    0
+pqqE    0
+phoA    1        M01_01103
+appA    1        M01_00764
+phnC    0
+acdS    0
+ipdC    0
+entA    1        M01_02510
+entB    0
+entC    0
+entE    0
+entF    0
+fepA    0
+budA    0
+budB    0
+budC    0
+otsA    0
+otsB    0
+```
 
 > **Comentario:**
 > - **Resultado:** la tabla tiene tres columnas: gen, número de copias y locus tags de las proteínas. Un `0` indica que eggNOG-mapper no asignó ese nombre a ninguna proteína.
