@@ -183,12 +183,12 @@ conda activate genome
 
 grep ">" /data/2025_1/database/m01_flye.racon.fasta
 
->contig_bts_01
->contig_bts_02
->contig_bts_03
->contig_bts_03
->contig_bts_04
->contig_bts_05
+>contig_bts_jin_01
+>contig_bts_suga_02
+>contig_bts_j-hope_03
+>contig_bts_rm_04
+>contig_bts_jimin_05
+>contig_bts_v_06
 
 prinseq-lite.pl -fasta /data/2025_1/database/m01_flye.racon.fasta -min_len 500 -seq_id "m01_00" -out_good m01_genome_final -out_bad null
 
@@ -867,9 +867,36 @@ Las categorías COG clasifican cada proteína en una de unas 25 grandes funcione
 ```bash
 grep -v "^#" ~/genomics/annotation/bakta/m01_bakta/m01.tsv | awk -F'\t' '$2=="cds" && $9 ~ /COG:COG[0-9]+/' | wc -l
 
+1522
+
 grep -v "^#" ~/genomics/annotation/bakta/m01_bakta/m01.tsv | awk -F'\t' '$2=="cds"{n=split($9,a,", "); for(j=1;j<=n;j++) if(a[j] ~ /^COG:[A-Z]+$/){sub("COG:","",a[j]); m=split(a[j],b,""); for(k=1;k<=m;k++) print b[k]}}' | sort | uniq -c | sort -k1,1nr > m01_cog_counts.txt
 
 cat m01_cog_counts.txt
+
+    186 E
+    184 J
+    130 K
+    114 C
+    108 G
+    104 T
+    101 H
+     96 P
+     82 R
+     81 M
+     79 O
+     72 L
+     58 U
+     57 F
+     50 I
+     49 N
+     43 V
+     41 S
+     28 D
+     22 Q
+      4 B
+      4 W
+      4 X
+      2 Z
 ```
 
 <!-- Pegar aquí la salida real de los comandos con el genoma m01 -->
