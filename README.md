@@ -247,12 +247,6 @@ grep ">" m01_genome_final.fasta
 > - **Resultado:** los 6 contigs tienen ahora nombres cortos, uniformes y correlativos (`m01_001` a `m01_006`). Como el orden se conserva, la correspondencia es directa: `contig_bts_jin_01` = `m01_001`, `contig_bts_suga_02` = `m01_002`, `contig_bts_j-hope_03` = `m01_003`, `contig_bts_rm_04` = `m01_004`, `contig_bts_jimin_05` = `m01_005` y `contig_bts_v_06` = `m01_006`. Anote esta correspondencia.
 > - **`m01_genome_final.fasta` es el genoma que se usa en el resto de la práctica.**
 
-```bash
-conda deactivate
-```
-
-> **Comentario:** cierra el entorno `genome` antes de activar otro. Conviene hacerlo siempre al terminar de usar un programa.
-
 ### Anotación del genoma con Bakta
 
 La anotación **estructural** responde a la pregunta *¿dónde están los genes?* y la **funcional**, a *¿qué hacen?* Bakta realiza las dos en una sola ejecución.
@@ -275,103 +269,6 @@ echo $BAKTA_DB
 
 ```bash
 bakta --output m01_bakta --prefix m01 --locus-tag M01 --genus Vibrio --keep-contig-headers --threads 10 ~/genomics/assembly/nanopore/m01_genome_final.fasta
-
-Parse genome sequences...
-        imported: 6
-        filtered & revised: 6
-        contigs: 6
-
-Start annotation...
-predict tRNAs...
-        found: 132
-predict tmRNAs...
-        found: 1
-predict rRNAs...
-        found: 37
-predict ncRNAs...
-        found: 29
-predict ncRNA regions...
-        found: 27
-predict CRISPR arrays...
-        found: 0
-predict & annotate CDSs...
-        predicted: 5521 
-        discarded length: 0
-        discarded spurious: 3
-        revised translational exceptions: 0
-        detected IPSs: 4410
-        found PSCs: 786
-        found PSCCs: 167
-        lookup annotations...
-        conduct expert systems...
-                amrfinder: 3
-                protein sequences: 40
-        combine annotations and mark hypotheticals...
-        detect pseudogenes...
-                candidates: 84
-                verified: 70
-        analyze hypothetical proteins: 383
-                detected Pfam hits: 10 
-                calculated proteins statistics
-        revise special cases...
-detect & annotate sORF...
-        detected: 84051
-        discarded due to overlaps: 69602
-        discarded spurious: 0
-        detected IPSs: 1
-        found PSCs: 3
-        lookup annotations...
-        filter and combine annotations...
-        filtered sORFs: 0
-detect gaps...
-        found: 0
-detect oriCs/oriVs...
-        found: 3
-detect oriTs...
-        found: 0
-apply feature overlap filters...
-select features and create locus tags...
-        selected: 5740
-improve annotations...
-        revised gene symbols: 19
-
-Genome statistics:
-        Genome size: 6,068,252 bp
-        Contigs/replicons: 6
-        GC: 45.5 %
-        N50: 3,620,046
-        N90: 2,216,041
-        N ratio: 0.0 %
-        coding density: 87.2 %
-
-annotation summary:
-        tRNAs: 132
-        tmRNAs: 1
-        rRNAs: 37
-        ncRNAs: 29
-        ncRNA regions: 26
-        CRISPR arrays: 0
-        CDSs: 5512
-                hypotheticals: 378
-                pseudogenes: 70
-        sORFs: 0
-        gaps: 0
-        oriCs/oriVs: 3
-        oriTs: 0
-
-Export annotation results to: /home/alumno01/genomics/annotation/bakta/m01_bakta
-        human readable TSV...
-        GFF3...
-        INSDC GenBank & EMBL...
-        genome sequences...
-        feature nucleotide sequences...
-        translated CDS sequences...
-        feature inferences...
-        circular genome plot...
-        hypothetical TSV...
-        translated hypothetical CDS sequences...
-        machine readable JSON...
-        Genome and annotation summary...
 ```
 
 > **Comentario (comando):**
@@ -594,10 +491,6 @@ grep -c ">" m01_bakta/m01.faa
 > - **Comando:** cuenta las líneas con `>` del archivo FASTA de proteínas, es decir, el número de proteínas.
 > - **Resultado:** 5 512 proteínas, el mismo número que los CDS de la tabla.
 
-```bash
-conda deactivate
-```
-
 > **Punto de control:** El genoma mide 6,07 Mb y tiene 5 512 CDS: aproximadamente un gen por cada 1 100 pb, coherente con la regla general de un gen por cada 1 000 pb en bacterias. Con su propio genoma, calcule el porcentaje de proteínas hipotéticas (hipotéticas / CDS × 100) y verifique que el número de copias del gen 16S coincida con el que encontró Barrnap en la Semana 05.
 
 ## 3. Envío de los análisis en línea
@@ -802,10 +695,6 @@ busco --plot m01_busco_summaries
 **Figura 8.** Gráfico comparativo de BUSCO para el genoma `m01` en modo `genome` (`m01_genome`) y en modo `proteins` (`m01_proteins`), con el linaje `vibrio_odb12.2`.
 
 > **Comentario (figura 8):** Cada barra horizontal representa un análisis y está dividida según el porcentaje de marcadores en cada categoría: completos y de copia única (S, celeste), completos y duplicados (D, azul oscuro), fragmentados (F, amarillo) y ausentes (M, rojo). Sobre cada barra se repite la línea resumen. Las dos barras son idénticas, casi completamente celestes, con una franja mínima amarilla y roja al final: la anotación conserva toda la información del ensamblaje.
-
-```bash
-conda deactivate
-```
 
 > **Punto de control:** El % `C` del modo `proteins` debería ser muy similar al del modo `genome`. Si fuera claramente menor, la anotación estaría perdiendo genes que sí están en el ensamblaje.
 
@@ -1270,8 +1159,6 @@ otsB    0
 conda activate quality
 
 seqkit grep -p M01_00005 ~/genomics/annotation/bakta/m01_bakta/m01.faa
-
-conda deactivate
 ```
 
 > **Comentario:**
@@ -1714,10 +1601,6 @@ m01_001|CGC27 PUL0579
 > - **Comando:** conserva las filas cuya columna 2 (`PULID`) no está vacía ni es `null`, e imprime las columnas 1 y 2 separadas por un espacio.
 > - **Resultado:** la lista de clústeres que se parecen a un PUL conocido (la primera línea es el encabezado): **17 de los 71 clústeres**. Los otros 54 no tienen un PUL de referencia parecido.
 
-```bash
-conda deactivate
-```
-
 > **Alternativa en línea:** el servidor dbCAN3 (https://pro.unl.edu/dbCAN2/) acepta el mismo archivo `m01.faa` y devuelve la misma tabla *overview*.
 
 ## 9. Identificación de clústeres de metabolitos secundarios (antiSMASH)
@@ -1895,10 +1778,6 @@ butiromycin     aminoglycoside  No resistance   0
 > - **Resultado:** las líneas con `#` explican cómo leer la tabla. Luego hay una fila por antimicrobiano, con su clase, el fenotipo predicho (`Resistant` o `No resistance`), el nivel de coincidencia (`Match`, de 0 a 3) y el gen que lo explica (`Genetic background`). Las 30 primeras líneas solo alcanzan a mostrar los aminoglucósidos, todos sin resistencia; las filas de tetraciclina y doxiciclina, más abajo, son las que corresponden a `tet(35)`.
 > - Como advierte el propio encabezado, `No resistance` solo significa que no hay nada en la base de datos que indique resistencia: no garantiza que la bacteria sea sensible.
 
-```bash
-conda deactivate
-```
-
 ### Comparar con los genes de resistencia anotados por Bakta
 
 ```bash
@@ -2016,10 +1895,6 @@ abricate --summary m01_vfdb.tab
 > - **Comando:** resume la tabla en una fila por genoma; es útil para comparar varios genomas a la vez.
 > - **Resultado:** `NUM_FOUND` = 7 genes; para cada gen se indica el % de cobertura: todos están cubiertos al 100 %, salvo `vscN` (97,13 %).
 
-```bash
-conda deactivate
-```
-
 > **Cómo interpretar VFDB en bacterias asociadas a plantas:**
 > - VFDB se construyó a partir de patógenos, y muchos de sus "factores de virulencia" son funciones de colonización que también usan las bacterias benéficas: flagelo y quimiotaxis, fimbrias y adhesinas, sideróforos, sistemas de secreción. Lo que debe preocupar es la presencia de **toxinas** y de sistemas de secreción con efectores característicos de patógenos.
 > - ABRicate compara nucleótidos: si su cepa es lejana a los patógenos de VFDB puede no detectar homólogos divergentes. Una tabla vacía no demuestra ausencia de virulencia.
@@ -2106,10 +1981,6 @@ m01_genome_final:AD413  1            69340   rep_cluster_1486                  M
 >   - `mash_neighbor_identification`: especie del plásmido más parecido de la base de datos: *Vibrio parahaemolyticus* para `AE795` y *Vibrio campbellii* para `AD413`.
 > - **Cruce con la sección 10:** el contig `m01_003`, que porta la toxina PirAB, es un **plásmido movilizable**: la toxina puede transferirse a otras bacterias. En cambio, el gen de resistencia `tet(35)` y el sistema de secreción tipo III están en el cromosoma 1.
 > - La agrupación de `m01_003` y `m01_005` en un solo plásmido es una predicción basada en el parecido con plásmidos de referencia. Si en el ensamblaje los dos contigs son circulares (columna `circ.` de Flye), lo más probable es que sean dos plásmidos distintos de la misma familia.
-
-```bash
-conda deactivate
-```
 
 > **Punto de control:** ¿Qué contigs fueron clasificados como cromosoma y cuáles como plásmido? Con su propio genoma, compare con `assembly_info.txt` de Flye (Semana 05): ¿los contigs pequeños y circulares fueron clasificados como plásmidos? Un contig circular pequeño que MOB-suite no reconoce puede ser un plásmido sin replicón conocido en la base de datos, algo frecuente en bacterias ambientales.
 
@@ -2228,10 +2099,6 @@ grep -v "^#" m01_mobile.csv | tail -n +2 | cut -d ',' -f 2,5 | sort | uniq -c | 
 > - **Comando:** cuenta cuántas copias hay de cada elemento. `tail -n +2` quita el encabezado; `cut -d ',' -f 2,5` deja el nombre y el tipo de cada elemento; `sort | uniq -c` cuenta, y `sort -k1,1nr` ordena de mayor a menor.
 > - **Resultado:** el genoma tiene 35 copias de tres IS distintas: **29 de ISVa15**, 4 de ISVa6 y 2 de ISVvu6. Además hay 15 transposones compuestos putativos y el transposón Tn6264, cada uno en una sola copia.
 > - La base de datos de MobileElementFinder se construyó sobre todo con bacterias de importancia clínica; en bacterias ambientales es normal obtener pocos resultados o ninguno.
-
-```bash
-conda deactivate
-```
 
 > **Punto de control:** Cruce las coordenadas de las secciones 7, 10 y 11, como se hizo aquí con la toxina PirAB. ¿Los genes de resistencia o de virulencia de su cepa están en un plásmido o cerca de una secuencia de inserción? ¿Algún gen PGP está en un plásmido? Un rasgo codificado en un plásmido puede perderse o transferirse, lo que afecta tanto la estabilidad del bioinoculante como su bioseguridad.
 
@@ -2388,10 +2255,6 @@ grep ">" b01_genome_final.fasta
 ```
 
 > **Comentario:** muestra los nuevos nombres. Anote a qué contig original corresponde cada uno, para relacionarlo con la columna `circ.` de `assembly_info.txt` (Flye) y con lo observado en Bandage. `b01_genome_final.fasta` es la entrada de todos los análisis.
-
-```bash
-conda deactivate
-```
 
 ### Repetir las secciones 2 a 12 con su genoma
 
